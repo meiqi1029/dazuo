@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频素材展示 - Video Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-video"></i>
+                <h2>视频素材库</h2>
+                <p>请输入访问密码</p>
+            </div>
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    进入
+                </button>
+            </form>
+            <div class="login-tips">
+                <p><i class="fas fa-info-circle"></i> 这是一个私人视频库，需要密码才能访问</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用界面 -->
+    <div class="main-app" id="mainApp" style="display: none;">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <h1 class="logo">
+                            <i class="fas fa-video"></i>
+                            视频素材库
+                        </h1>
+                        <p class="subtitle">精选视频素材，创意无限</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="header-btn" id="shareAccessBtn">
+                            <i class="fas fa-share-alt"></i>
+                            分享访问权限
+                        </button>
+                        <button class="header-btn" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            退出
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <!-- 上传区域 -->
+                <section class="upload-section">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>上传您的视频素材</h3>
+                        <p>拖拽视频文件到此处，或点击选择文件</p>
+                        
+                        <!-- 分类选择器 -->
+                        <div class="upload-category-selector">
+                            <label for="uploadCategory">选择分类：</label>
+                            <select id="uploadCategory" class="category-select">
+                                <option value="newmedia">新媒体</option>
+                                <option value="promo">传统媒体 - 宣传片</option>
+                                <option value="ad">传统媒体 - 广告</option>
+                            </select>
+                        </div>
+                        
+                        <input type="file" id="videoInput" accept="video/*" multiple style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('videoInput').click()">
+                            <i class="fas fa-plus"></i> 选择视频文件
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 搜索和筛选 -->
+                <section class="controls">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="搜索视频...">
+                    </div>
+                    
+                    <!-- 一级分类 -->
+                    <div class="category-section">
+                        <label class="category-label">视频分类：</label>
+                        <div class="category-buttons">
+                            <button class="category-btn active" data-category="all">
+                                <i class="fas fa-th-large"></i>
+                                全部分类
+                            </button>
+                            <button class="category-btn" data-category="traditional">
+                                <i class="fas fa-tv"></i>
+                                传统媒体
+                            </button>
+                            <button class="category-btn" data-category="newmedia">
+                                <i class="fas fa-mobile-alt"></i>
+                                新媒体
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 二级分类 (传统媒体子分类) -->
+                    <div class="subcategory-section" id="traditionalSubcategory" style="display: none;">
+                        <label class="subcategory-label">传统媒体类型：</label>
+                        <div class="subcategory-buttons">
+                            <button class="subcategory-btn active" data-subcategory="all-traditional">
+                                <i class="fas fa-list"></i>
+                                全部传统媒体
+                            </button>
+                            <button class="subcategory-btn" data-subcategory="promo">
+                                <i class="fas fa-film"></i>
+                                宣传片
+                            </button>
+                            <button class="subcategory-btn" data-subcategory="ad">
+                                <i class="fas fa-bullhorn"></i>
+                                广告
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 二级筛选 -->
+                    <div class="filter-section">
+                        <label class="filter-label">排序筛选：</label>
+                        <div class="filter-options">
+                            <button class="filter-btn active" data-filter="all">全部</button>
+                            <button class="filter-btn" data-filter="recent">最新</button>
+                            <button class="filter-btn" data-filter="popular">热门</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 视频网格 -->
+                <section class="video-grid" id="videoGrid">
+                    <!-- 视频卡片将通过JavaScript动态生成 -->
+                </section>
+
+                <!-- 空状态 -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-video-slash"></i>
+                    <h3>暂无视频</h3>
+                    <p>上传您的第一个视频开始使用吧！</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 视频播放模态框 -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <video id="modalVideo" controls>
+                您的浏览器不支持视频播放
+            </video>
+            <div class="modal-info">
+                <h3 id="modalTitle"></h3>
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享模态框 -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeShareModal">&times;</span>
+            <h3>分享视频</h3>
+            <div class="share-options">
+                <div class="share-link">
+                    <label>视频链接：</label>
+                    <div class="link-input">
+                        <input type="text" id="shareLink" readonly>
+                        <button id="copyLinkBtn">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                <div class="share-social">
+                    <button class="social-btn" data-platform="wechat">
+                        <i class="fab fa-weixin"></i> 微信
+                    </button>
+                    <button class="social-btn" data-platform="qq">
+                        <i class="fab fa-qq"></i> QQ
+                    </button>
+                    <button class="social-btn" data-platform="weibo">
+                        <i class="fab fa-weibo"></i> 微博
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享访问权限模态框 -->
+    <div class="modal" id="shareAccessModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeShareAccessModal">&times;</span>
+            <h3><i class="fas fa-share-alt"></i> 分享访问权限</h3>
+            <div class="share-access-content">
+                <div class="access-options">
+                    <div class="option-group">
+                        <label>选择分享类型：</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="shareType" value="temporary" checked>
+                                <span>临时访问 (24小时)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="shareType" value="permanent">
+                                <span>永久访问</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="generate-btn" id="generateAccessBtn">
+                        <i class="fas fa-key"></i> 生成访问链接
+                    </button>
+                </div>
+                
+                <div class="generated-link" id="generatedLinkSection" style="display: none;">
+                    <label>分享链接：</label>
+                    <div class="link-input">
+                        <input type="text" id="generatedLink" readonly>
+                        <button id="copyAccessLinkBtn">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+                    <div class="link-info">
+                        <p><i class="fas fa-info-circle"></i> 
+                        <span id="linkExpiryInfo">此链接将在24小时后失效</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 视频素材库. 让创意无限延伸.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
